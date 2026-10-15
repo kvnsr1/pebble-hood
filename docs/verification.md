@@ -1,0 +1,79 @@
+# Verification
+
+Verified in the Linux workspace on 2026-10-15. **No live brokerage, physical watch, iPhone, public HTTPS deployment, or authenticated CloudPebble session was tested.**
+
+## Build
+
+Pinned pebble-tool 5.0.40 and SDK 4.33.1 compile both declared targets:
+
+| Target | Display | App code + static RAM | Heap available | Resources |
+| --- | --- | --- | --- | --- |
+| Flint / Pebble 2 Duo | 144×168 monochrome | 22,695 bytes / 64KiB | 42,841 bytes | 4,260 bytes |
+| Emery / Pebble Time 2 | 200×228 color | 22,739 bytes / 128KiB | 108,333 bytes | 4,309 bytes |
+
+Both demo and configured build modes were built. The configured test artifact used a reserved `.invalid` hostname and was kept under ignored `.tools/`; it is not a usable public service. Its PBW manifest was checked for version 2, both target binaries/resources, and Internet permission restricted to that hostname. The installable artifact in `dist/` is the standalone demo, containing both platforms and no Internet permission.
+
+The SDK's linker emits its existing RWX-segment warning. Source compilation passes; no physical memory/battery measurements are claimed. Formatting is constrained to ES5-compatible trailing commas for the SDK's older JS bundler.
+
+## Automated checks
+
+`./scripts/test.sh`: **21 Python tests and 12 Node tests pass**. Coverage includes:
+
+- Exact decimal fractional arithmetic, negative/zero bases, missing values, upper-range precision and signed zero.
+- Stable demo fixtures, supported-holdings sorting and full account total independent of the equities subtotal.
+- Encrypted vault records, single-use pairing, bearer authentication, pagination and revocation.
+- Backend cache age, stale fallback and failed-refresh cooldown.
+- MCP read-operation allowlist, denied mutations, 401/403/429/500, input-schema checks, SSE discovery, token rotation and one refresh retry when lifetime is unknown.
+- Explicit mapping against synthetic schemas, schema fingerprints, pointers and timestamp zones. These synthetic keys are not Robinhood field assertions.
+- Bounded messages, missing/long fields, hidden balances and rejection of unapproved chart history kinds.
+- Phone setup state, stale age retention, expired-auth clear, late responses after disconnect and serialized refresh requests.
+
+`ruff check backend scripts test` and JS syntax checks pass. FastAPI's installed test client emits a dependency deprecation warning; tests still pass.
+
+`.tools/venv/bin/python scripts/smoke-backend.py` starts a real Uvicorn process with an ephemeral encrypted vault. Loopback HTTP checks passed for health, static settings, pairing, authenticated demo retrieval and revocation. This does not establish public TLS or iPhone-webview compatibility.
+
+## Emulator checks
+
+Actual SDK QEMU runs, with bundled PebbleKit JS and deterministic synthetic values. Main screens use native menus/action menus/scroll layers. The harness also injects synthetic AppMessage pages and status codes for deterministic failures, unusual values and interrupted transfers; these do not demonstrate real Robinhood failures or actual Bluetooth disconnection.
+
+The native-size PNGs were visually inspected for readable text, contrast, wrapping and expected navigation. The holdings age is fixed above its scrolling menu. Main totals compact large values and the exact total remains in Info. Ticker/company/detail fields wrap. Local hide survives reconnect, and error footers retain data age.
+
+An incomplete page with a different proposed portfolio value is compared against the previous rendered summary before commit. Both platforms preserve the previous view. The harness checks the native frame size and that expected portfolio screens still show the app header, preventing accidental launcher screenshots from counting as success.
+
+| Case | Monochrome | Color |
+| --- | --- | --- |
+| Overview | [Flint](screenshots/flint-overview.png) | [Emery](screenshots/emery-overview.png) |
+| Options | [Flint](screenshots/flint-options.png) | [Emery](screenshots/emery-options.png) |
+| Holdings | [Flint](screenshots/flint-holdings.png) | [Emery](screenshots/emery-holdings.png) |
+| Detail | [Flint](screenshots/flint-detail.png) | [Emery](screenshots/emery-detail.png) |
+| Cost / investment return | [Flint](screenshots/flint-detail-return.png) | [Emery](screenshots/emery-detail-return.png) |
+| Hidden balances | [Flint](screenshots/flint-hidden.png) | [Emery](screenshots/emery-hidden.png) |
+| Empty account | [Flint](screenshots/flint-empty.png) | [Emery](screenshots/emery-empty.png) |
+| First setup | [Flint](screenshots/flint-setup.png) | [Emery](screenshots/emery-setup.png) |
+| Expired auth | [Flint](screenshots/flint-auth-expired.png) | [Emery](screenshots/emery-auth-expired.png) |
+| Live mapping pending | [Flint](screenshots/flint-live-pending.png) | [Emery](screenshots/emery-live-pending.png) |
+| Phone offline | [Flint](screenshots/flint-phone-offline.png) | [Emery](screenshots/emery-phone-offline.png) |
+| No internet | [Flint](screenshots/flint-no-internet.png) | [Emery](screenshots/emery-no-internet.png) |
+| Provider error | [Flint](screenshots/flint-provider-error.png) | [Emery](screenshots/emery-provider-error.png) |
+| Stale values | [Flint](screenshots/flint-stale.png) | [Emery](screenshots/emery-stale.png) |
+| Offline cache | [Flint](screenshots/flint-offline-cached.png) | [Emery](screenshots/emery-offline-cached.png) |
+| Large negative balance | [Flint](screenshots/flint-large-negative.png) | [Emery](screenshots/emery-large-negative.png) |
+| Long ticker | [Flint](screenshots/flint-long-ticker.png) | [Emery](screenshots/emery-long-ticker.png) |
+| Missing quote / cost | [Flint](screenshots/flint-missing-detail.png) | [Emery](screenshots/emery-missing-detail.png) |
+
+Reproduce after building:
+
+```sh
+./scripts/reset-emulator.sh
+.tools/venv/bin/python scripts/capture-emulator.py flint
+./scripts/reset-emulator.sh
+.tools/venv/bin/python scripts/capture-emulator.py emery
+```
+
+The script uses one persistent SDK connection, an SDK overview screenshot, and QEMU's native framebuffer capture for subsequent screens, the same monitor path used by the SDK's fast capture support. Some idle color frames show QEMU's simulated dim backlight; the SDK overview captures the app's undimmed colors. The phone relay's repeated screenshot transfers occasionally timed out during initial testing, so image capture is kept off that channel. `reset-emulator.sh` stops only project-recorded emulator processes and clears their PID metadata, preserving emulated flash. No other project is changed.
+
+Navigation regression fixes were verified: ActionMenu opens the native result window; Back returns detail → holdings → overview; clearing/auth loss keeps the root window alive. Real iPhone pairing, real network failures, physical button feel, battery life and real account comparisons remain required before treating this as a validated live portfolio viewer.
+
+## Robinhood connection evidence
+
+The unauthenticated official MCP POST returns a real 401 challenge. Protected-resource and authorization metadata were fetched; public-client registration returned 200. No user authenticated, no brokerage response was obtained, and refresh success was tested only with mocked protocol responses. See [Robinhood access](robinhood-access.md) for precisely what remains unknown and the supported browser-login steps.

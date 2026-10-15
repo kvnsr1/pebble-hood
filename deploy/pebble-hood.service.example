@@ -1,0 +1,16 @@
+[Unit]
+Description=Pebble Hood private viewer
+After=network-online.target
+[Service]
+User=pebblehood
+WorkingDirectory=/srv/pebble-hood
+EnvironmentFile=/srv/pebble-hood/.env
+ExecStart=/srv/pebble-hood/.tools/venv/bin/uvicorn backend.app:create_app --factory --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/srv/pebble-hood/.private
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+{
+  "name": "pebble-hood",
+  "version": "0.1.0",
+  "author": "kvnsr1",
+  "private": true,
+  "keywords": [
+    "pebble-app"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "pebble": {
+    "displayName": "Pebble Hood",
+    "uuid": "18a3cae8-096f-47dc-b951-59a27d7efb9b",
+    "projectType": "native",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "flint",
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "capabilities": [
+      "configurable"
+    ],
+    "messageKeys": {
+      "TYPE": 0,
+      "GEN": 1,
+      "PAGE": 2,
+      "PAGES": 3,
+      "COUNT": 4,
+      "TOTAL_COUNT": 5,
+      "UPDATED": 6,
+      "ACCOUNT": 7,
+      "VALUE": 8,
+      "RETURN": 9,
+      "PERCENT": 10,
+      "CHART": 11,
+      "CHART_LABEL": 12,
+      "NOTE": 13,
+      "DEMO": 14,
+      "HIDE": 15,
+      "INDEX": 16,
+      "TICKER": 17,
+      "POSITION": 18,
+      "DAILY": 19,
+      "DETAIL": 20,
+      "ERROR": 21,
+      "CMD": 22,
+      "VERSION": 23
+    },
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "MENU_ICON",
+          "file": "images/menu_icon.png",
+          "menuIcon": true
+        }
+      ]
+    }
+  }
+}

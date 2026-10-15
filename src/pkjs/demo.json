@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "provider": "demo",
+  "account": {
+    "id": "demo-main",
+    "name": "Demo brokerage"
+  },
+  "as_of": 1792074900,
+  "currency": "USD",
+  "state": "OK",
+  "stale": false,
+  "total": "18432.17",
+  "total_source": "synthetic_account_total",
+  "today": {
+    "amount": "85.16",
+    "percent": "0.46",
+    "session": "Synthetic session"
+  },
+  "holdings": [
+    {
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "asset_class": "etf",
+      "quantity": "32.125",
+      "price": "280.40",
+      "value": "9007.85",
+      "average_cost": "231.25",
+      "unrealized": "1578.94",
+      "unrealized_pct": "21.25",
+      "price_day": "1.65",
+      "price_day_pct": "0.59"
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "asset_class": "equity",
+      "quantity": "12.375",
+      "price": "232.15",
+      "value": "2872.86",
+      "average_cost": "184.20",
+      "unrealized": "593.38",
+      "unrealized_pct": "26.03",
+      "price_day": "-1.95",
+      "price_day_pct": "-0.83"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "asset_class": "equity",
+      "quantity": "4.5",
+      "price": "428.50",
+      "value": "1928.25",
+      "average_cost": "398.10",
+      "unrealized": "136.80",
+      "unrealized_pct": "7.64",
+      "price_day": "4.75",
+      "price_day_pct": "1.12"
+    },
+    {
+      "ticker": "BRK.B",
+      "name": "Berkshire Hathaway Inc. Class B",
+      "asset_class": "equity",
+      "quantity": "2.125",
+      "price": "465.10",
+      "value": "988.34",
+      "average_cost": null,
+      "unrealized": null,
+      "unrealized_pct": null,
+      "price_day": "2.60",
+      "price_day_pct": "0.56"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "asset_class": "equity",
+      "quantity": "5.75",
+      "price": "138.20",
+      "value": "794.65",
+      "average_cost": "92.30",
+      "unrealized": "263.93",
+      "unrealized_pct": "49.73",
+      "price_day": "1.20",
+      "price_day_pct": "0.88"
+    },
+    {
+      "ticker": "SCHD",
+      "name": "Schwab US Dividend Equity ETF",
+      "asset_class": "etf",
+      "quantity": "18.125",
+      "price": "28.50",
+      "value": "516.56",
+      "average_cost": "26.10",
+      "unrealized": "43.50",
+      "unrealized_pct": "9.20",
+      "price_day": "-0.10",
+      "price_day_pct": "-0.35"
+    },
+    {
+      "ticker": "LONGTICKER.X",
+      "name": "Long company name rendering example",
+      "asset_class": "equity",
+      "quantity": "0.000125",
+      "price": "153.50",
+      "value": "0.02",
+      "average_cost": "160.00",
+      "unrealized": "-0.00",
+      "unrealized_pct": "-4.06",
+      "price_day": null,
+      "price_day_pct": null
+    },
+    {
+      "ticker": "PRIVATE",
+      "name": "Unquoted equity example",
+      "asset_class": "equity",
+      "quantity": "2",
+      "price": null,
+      "value": null,
+      "average_cost": null,
+      "unrealized": null,
+      "unrealized_pct": null,
+      "price_day": null,
+      "price_day_pct": null
+    }
+  ],
+  "unsupported": [
+    {
+      "kind": "option",
+      "count": 1
+    }
+  ],
+  "history": {
+    "kind": "synthetic",
+    "label": "DEMO value samples",
+    "points": [
+      {
+        "at": 1792071600,
+        "value": "18310.00"
+      },
+      {
+        "at": 1792071900,
+        "value": "18355.00"
+      },
+      {
+        "at": 1792072200,
+        "value": "18340.00"
+      },
+      {
+        "at": 1792072500,
+        "value": "18362.00"
+      },
+      {
+        "at": 1792072800,
+        "value": "18315.00"
+      },
+      {
+        "at": 1792073100,
+        "value": "18388.00"
+      },
+      {
+        "at": 1792073400,
+        "value": "18401.00"
+      },
+      {
+        "at": 1792073700,
+        "value": "18392.00"
+      },
+      {
+        "at": 1792074000,
+        "value": "18422.00"
+      },
+      {
+        "at": 1792074300,
+        "value": "18405.00"
+      },
+      {
+        "at": 1792074600,
+        "value": "18419.00"
+      },
+      {
+        "at": 1792074900,
+        "value": "18432.17"
+      }
+    ]
+  },
+  "note": "Synthetic data. Total includes cash and an unsupported option."
+}

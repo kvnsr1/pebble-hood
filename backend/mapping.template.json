@@ -1,0 +1,25 @@
+{
+  "reviewed": false,
+  "schema_sha256": "REPLACE_WITH_INSPECT_FINGERPRINT",
+  "total_includes_all_assets": false,
+  "today_is_authoritative": false,
+  "accounts": {
+    "tool": "get_accounts", "arguments": {}, "items": null, "next_cursor": null,
+    "fields": {"id": null, "name": null}
+  },
+  "portfolio": {
+    "tool": "get_portfolio", "arguments": {}, "object": "",
+    "fields": {"total": null, "currency": null, "as_of": null, "unsupported": null,
+      "today_amount": null, "today_percent": null, "session": null},
+    "unsupported_fields": {"kind": null, "count": null}
+  },
+  "positions": {
+    "tool": "get_equity_positions", "arguments": {}, "items": null, "next_cursor": null,
+    "fields": {"ticker": null, "name": null, "quantity": null, "average_cost": null, "asset_class": null},
+    "asset_class_values": {}
+  },
+  "quotes": {
+    "tool": "get_equity_quotes", "arguments": {}, "items": null, "next_cursor": null,
+    "fields": {"ticker": null, "price": null, "previous_close": null, "as_of": null}
+  }
+}

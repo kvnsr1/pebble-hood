@@ -1,0 +1,43 @@
+{
+  "initialize_status": 401,
+  "challenge_present": true,
+  "protected_resource_status": 200,
+  "protected_resource": {
+    "authorization_servers": [
+      "https://agent.robinhood.com/mcp/trading"
+    ],
+    "bearer_methods_supported": [
+      "header"
+    ],
+    "resource": "https://agent.robinhood.com/mcp/trading",
+    "scopes_supported": [
+      "internal"
+    ]
+  },
+  "authorization_metadata_status": 200,
+  "authorization_metadata": {
+    "authorization_endpoint": "https://robinhood.com/oauth",
+    "authorization_response_iss_parameter_supported": true,
+    "code_challenge_methods_supported": [
+      "S256"
+    ],
+    "grant_types_supported": [
+      "authorization_code",
+      "refresh_token"
+    ],
+    "issuer": "https://agent.robinhood.com/mcp/trading",
+    "registration_endpoint": "https://agent.robinhood.com/oauth/trading/register",
+    "response_types_supported": [
+      "code"
+    ],
+    "scopes_supported": [
+      "internal"
+    ],
+    "token_endpoint": "https://api.robinhood.com/oauth2/token/",
+    "token_endpoint_auth_methods_supported": [
+      "none"
+    ]
+  },
+  "authenticated": false,
+  "tools_and_account_fields_verified": false
+}

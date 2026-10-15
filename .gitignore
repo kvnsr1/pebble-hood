@@ -1,0 +1,16 @@
+.tools/
+.research/
+build/
+.waf-*
+node_modules/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+.private/
+*.sqlite*
+
+.lock-waf*
+
+.ruff_cache/

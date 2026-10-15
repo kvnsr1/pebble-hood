@@ -82,7 +82,7 @@ In current Core, enable **Use LAN developer connection** under Phone → Connect
 ./scripts/pebble.sh install --phone PHONE_IP dist/pebble-hood.pbw
 ```
 
-Alternatively use `./scripts/pebble.sh login` followed by `install --cloudpebble PATH_TO_PBW`. These current conventions come from the user's pebble-calendar project and current SDK documentation; iPhone/physical-watch installation was not exercised in this workspace.
+Alternatively use `./scripts/pebble.sh login` followed by `install --cloudpebble PATH_TO_PBW`. Use the same Pebble account as the phone, with cloud Developer Connection enabled. Direct cloud installation of the demo to the user's connected physical watch succeeded on 2026-10-15. These current conventions also match the user's pebble-calendar project and current SDK documentation.
 
 ## Current CloudPebble: browser build and Dev Connection
 

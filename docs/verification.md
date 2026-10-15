@@ -1,6 +1,10 @@
 # Verification
 
-Verified in the Linux workspace on 2026-10-15. **No live brokerage, physical watch, iPhone, public HTTPS deployment, or authenticated CloudPebble session was tested.**
+Verified in the Linux workspace on 2026-10-15. The standalone demo was also installed on the user's connected physical watch through the authenticated CloudPebble cloud Developer Connection; the CLI reported **App install succeeded**. Live brokerage access, public HTTPS deployment, physical button navigation and battery life remain unverified.
+
+## Physical installation
+
+The official Pebble browser sign-in completed, the cloud proxy authenticated, and the phone connected. `./scripts/pebble.sh install --cloudpebble dist/pebble-hood-demo.pbw` successfully transferred the compiled demo. This verifies the direct cloud installation route, independently of the browser IDE. It does not establish live Robinhood access or physical UI behavior. Authentication files remain in ignored local SDK storage, outside source control.
 
 ## Build
 

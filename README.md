@@ -14,6 +14,8 @@ Every demo value is labeled. It includes fractional holdings, ETFs, missing cost
 
 ## Build and connect
 
+For browser-only demo installation, [import directly into CloudPebble](https://cloudpebble.repebble.com/ide/import/github/kvnsr1/pebble-hood), then follow the [CloudPebble / Dev Connection steps](docs/setup.md#current-cloudpebble-browser-build-and-dev-connection).
+
 ```sh
 ./scripts/setup.sh
 ./scripts/test.sh

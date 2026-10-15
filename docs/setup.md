@@ -84,9 +84,22 @@ In current Core, enable **Use LAN developer connection** under Phone → Connect
 
 Alternatively use `./scripts/pebble.sh login` followed by `install --cloudpebble PATH_TO_PBW`. These current conventions come from the user's pebble-calendar project and current SDK documentation; iPhone/physical-watch installation was not exercised in this workspace.
 
-## Current CloudPebble
+## Current CloudPebble: browser build and Dev Connection
 
-Use [cloudpebble.repebble.com](https://cloudpebble.repebble.com/), not the retired historical service. Import the GitHub repository as **Pebble C SDK** and select Flint/Emery. Plain compile runs the demo defaults. For a configured build, edit `src/pkjs/settings.js` to your HTTPS origin and `demo: false`; configure equivalent Internet permission in project settings if available, or download the PBW and apply `scripts/package-pbw.py` locally. The CloudPebble IDE generates its own manifest, so verify the resulting PBW's permissions. CloudPebble import/build was documented from current sources but not tested in an authenticated browser. The local scripted build is the verified workflow.
+You can build and install the demo without installing a local SDK.
+
+1. Open [Import pebble-hood into CloudPebble](https://cloudpebble.repebble.com/ide/import/github/kvnsr1/pebble-hood). Sign in with the **same Pebble account** used in your Pebble phone app. Import branch `main` as **Pebble C SDK** if asked. GitHub Repo Sync is optional for importing this public repository; it is only needed to push edits back.
+2. In project **Settings**, confirm **Emery / Pebble Time 2** for Time 2, or **Flint / Pebble 2 Duo** for Duo. The repository declares both. Keep `src/pkjs/settings.js` at its default `demo: true`, `backend: ""` for the first install. Do not enter Robinhood credentials here.
+3. Open **Build & Run** and compile. After a successful build, under **Run On**, open **Phone** and choose **New Cloud Dev Connection**.
+4. With the phone app open and the watch connected, its Devices → watch menu should say **Connected to CloudPebble**. Click **Install and Run** in CloudPebble. Launch Pebble Hood; its sample portfolio is marked **DEMO**. CloudPebble's ordinary build can retain the name Pebble Hood rather than the locally packaged Hood Demo name.
+
+If the phone shows an IP address instead, it is using LAN mode. Turn off **Use LAN developer connection** under Settings → Phone → Connectivity, then toggle the watch's **Dev Connection** off/on. CloudPebble uses the cloud proxy and does not connect directly to that IP. With the current phone app choose **New Cloud Dev Connection**; the older **Cloud Dev Connection** and **Local Dev Connection** options use earlier sign-in systems. The computer and phone do not need to share Wi-Fi for cloud mode.
+
+CloudPebble builds the native C app and bundles PebbleKit JS. The private Python backend runs separately, and real portfolio access still needs the browser login and field verification described in [Robinhood access](robinhood-access.md). Demo mode requires neither.
+
+For a future configured build, edit `src/pkjs/settings.js` in CloudPebble to your HTTPS backend origin and `demo: false`; configure equivalent Internet permission in project settings if available, or download the PBW and apply `scripts/package-pbw.py` locally. The IDE generates its own manifest, so verify the resulting permissions. Do not put brokerage credentials or tokens in the CloudPebble project.
+
+These steps follow the current [CloudPebble guide](https://developer.repebble.com/sdk/cloud/) and [Developer Connection guide](https://developer.repebble.com/guides/tools-and-resources/developer-connection/). Import/build/install in an authenticated CloudPebble account has not been exercised from this workspace; the verified local build and emulator results are in `verification.md`.
 
 ## Troubleshooting
 

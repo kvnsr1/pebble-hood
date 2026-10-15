@@ -24,7 +24,7 @@ These results establish that the private Site supports authenticated requests wi
 
 [pebble-sites-test.pbw](../dist/pebble-sites-test.pbw) is a separate diagnostic app with UUID `784cc80b-6710-4f06-9988-7c8b0bcd3150`. It was compiled for Flint and Emery. Its manifest grants Internet permission only to the test Site hostname. It contains no Sites service credential, live backend token, or brokerage token. It has no trading operations. Back closes it; Select retries.
 
-A cloud installation was attempted, but the SDK authenticated to the proxy and waited for the phone without receiving a phone connection within the bounded wait. No installation or physical request success is claimed. See the JSON result for the latest observed status. Both diagnostic binaries built; native rendering and physical button behavior remain unchecked.
+The cloud installation succeeded after the phone connected. The actual iPhone baseline logged `NETWORK_OR_PERMISSION`, status 0 and no JSON marker for both requests. This does not distinguish permission denial, CORS, DNS/TLS failure or another network issue; it is not an observed HTTP 401 from the phone. The earlier 401 results above are from the workspace HTTP client. See the JSON result for the latest observed status. Both diagnostic binaries built; native rendering and physical button behavior remain unchecked.
 
 When the Pebble phone app is open with cloud Dev Connection enabled:
 

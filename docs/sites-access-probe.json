@@ -1,7 +1,7 @@
 {
   "url": "https://pebble-hood-connection-test.kvnsr1.chatgpt.site",
   "brokerage_data_used": false,
-  "phone_tested": false,
+  "phone_tested": true,
   "checks": [
     {
       "case": "anonymous",
@@ -22,8 +22,20 @@
       "synthetic_marker_received": true
     }
   ],
-  "phone_probe_install": false,
-  "phone_result": null,
+  "phone_probe_install": true,
+  "phone_result": {
+    "without_extra_header": {
+      "state": "NETWORK_OR_PERMISSION",
+      "http": 0,
+      "marker": false
+    },
+    "view_token": {
+      "state": "NETWORK_OR_PERMISSION",
+      "http": 0,
+      "marker": false
+    },
+    "phase": "baseline"
+  },
   "site_deployment": {
     "project_id": "appgprj_6ad1413cd354819193428e4f86bde260",
     "deployment_id": "appgdep_6ad143eed51c8191aa533b86221a70f0",
@@ -32,5 +44,20 @@
     "url": "https://pebble-hood-connection-test.kvnsr1.chatgpt.site",
     "source_commit": "0d48ce6e5fcbe1f4391d93e240eb8773a21ec58e"
   },
-  "browser_cookie_sharing_tested": false
+  "browser_cookie_sharing_tested": false,
+  "phone_results": [
+    {
+      "without_extra_header": {
+        "state": "NETWORK_OR_PERMISSION",
+        "http": 0,
+        "marker": false
+      },
+      "view_token": {
+        "state": "NETWORK_OR_PERMISSION",
+        "http": 0,
+        "marker": false
+      },
+      "phase": "baseline"
+    }
+  ]
 }

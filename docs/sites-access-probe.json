@@ -1,0 +1,36 @@
+{
+  "url": "https://pebble-hood-connection-test.kvnsr1.chatgpt.site",
+  "brokerage_data_used": false,
+  "phone_tested": false,
+  "checks": [
+    {
+      "case": "anonymous",
+      "status": 401,
+      "content_type": "text/html; charset=utf-8",
+      "synthetic_marker_received": false
+    },
+    {
+      "case": "phone_view_token_only",
+      "status": 401,
+      "content_type": "text/html; charset=utf-8",
+      "synthetic_marker_received": false
+    },
+    {
+      "case": "supported_service_access",
+      "status": 200,
+      "content_type": "application/json",
+      "synthetic_marker_received": true
+    }
+  ],
+  "phone_probe_install": false,
+  "phone_result": null,
+  "site_deployment": {
+    "project_id": "appgprj_6ad1413cd354819193428e4f86bde260",
+    "deployment_id": "appgdep_6ad143eed51c8191aa533b86221a70f0",
+    "version_id": "appgprj_6ad1413cd354819193428e4f86bde260~appgver_ef65f2b0a9988191a2ba751bd5f1700a",
+    "status": "succeeded",
+    "url": "https://pebble-hood-connection-test.kvnsr1.chatgpt.site",
+    "source_commit": "0d48ce6e5fcbe1f4391d93e240eb8773a21ec58e"
+  },
+  "browser_cookie_sharing_tested": false
+}

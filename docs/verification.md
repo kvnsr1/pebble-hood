@@ -21,7 +21,7 @@ The SDK's linker emits its existing RWX-segment warning. Source compilation pass
 
 ## Automated checks
 
-`./scripts/test.sh`: **38 Python tests and 18 Node tests pass**. Coverage includes:
+`./scripts/test.sh`: **38 Python tests and 23 Node tests pass**. Coverage includes:
 
 - Exact decimal fractional arithmetic, negative/zero bases, missing values, upper-range precision and signed zero.
 - Stable demo fixtures, supported-holdings sorting and full account total independent of the equities subtotal.
@@ -34,6 +34,7 @@ The SDK's linker emits its existing RWX-segment warning. Source compilation pass
 - Browser-only connection privileges separate from the phone's view bearer; Secure/HttpOnly/SameSite cookies, device binding, CSRF, PKCE, issuer/state validation, replay prevention, cancellation, expiry and redacted token failures.
 - Reconnect clears prior backend financial data; failed sign-in preserves it. Broker disconnect revokes all paired phones. Deployment-generated encryption secrets survive vault reopen.
 - Settings preserves the Pebble nonce across OAuth and clears temporary browser storage, keeps canceled-login feedback visible, and ignores late account-list responses after a source change.
+- The separate Sites diagnostic distinguishes sign-in rejection from network failure, limits watch messages, avoids a service credential in client code, and retries after returning from the normal ChatGPT sign-in webview.
 
 `ruff check backend scripts test` and JS syntax checks pass. FastAPI's installed test client emits a dependency deprecation warning; tests still pass.
 
@@ -90,3 +91,7 @@ Navigation regression fixes were verified: ActionMenu opens the native result wi
 ## Robinhood connection evidence
 
 The unauthenticated official MCP POST returns a real 401 challenge. Protected-resource and authorization metadata were fetched; public-client registration returned 200 for both loopback and HTTPS callbacks. The HTTPS test used the reserved example URL `https://hood.example.com/oauth/robinhood/callback` and the response echoed it. No user authenticated, no real callback or brokerage response was obtained, and refresh success was tested only with mocked protocol responses. See [Robinhood access](robinhood-access.md) for precisely what remains unknown and the supported browser-login steps.
+
+## ChatGPT Sites compatibility
+
+The owner-private test Site was actually published and tested over HTTPS with synthetic data. Anonymous and ordinary backend-style authorization requests returned 401; the existing Sites service credential returned 200 and the expected JSON marker. A separate diagnostic PBW built for Flint and Emery. Physical installation/request verification is pending because the cloud proxy did not receive a phone connection during the bounded attempt. Normal ChatGPT browser sign-in and background cookie sharing are prepared as the next physical check. No service credential is in the PBW, no Site audience was widened, and no Robinhood data was used. See [Sites test](sites-test.md) and its recorded JSON for details. The probe is static; production server code, durable storage/encryption and hosted Robinhood OAuth have not been migrated or verified on Sites.

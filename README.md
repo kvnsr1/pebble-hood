@@ -27,6 +27,7 @@ For a configured build, run the backend behind your HTTPS origin, set `HOOD_BACK
 
 - [Exact iPhone, backend, HTTPS, SDK and CloudPebble instructions](docs/setup.md)
 - [Phone-based Robinhood connection and hosted deployment](docs/phone-connect.md)
+- [ChatGPT Sites compatibility test and private-phone access findings](docs/sites-test.md)
 - [Verified Robinhood findings and login/mapping steps](docs/robinhood-access.md)
 - [Architecture, financial semantics and message contract](docs/contract.md)
 - [Reviewed Pebble resources, design decisions and licenses](docs/design-references.md)

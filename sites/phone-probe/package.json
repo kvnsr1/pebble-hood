@@ -1,0 +1,10 @@
+{
+  "name":"pebble-sites-test","version":"0.1.0","author":"kvnsr1","private":true,
+  "dependencies":{},
+  "pebble":{
+    "displayName":"Sites Test","uuid":"784cc80b-6710-4f06-9988-7c8b0bcd3150",
+    "projectType":"native","sdkVersion":"3","enableMultiJS":true,
+    "targetPlatforms":["flint","emery"],"watchapp":{"watchface":false},"capabilities":["configurable"],
+    "messageKeys":{"SUMMARY":0,"RUN":1},"resources":{"media":[]}
+  }
+}

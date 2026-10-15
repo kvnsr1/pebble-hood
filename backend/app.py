@@ -1,13 +1,16 @@
 import copy
+import os
 import threading
 import time
 from pathlib import Path
+import httpx
 from fastapi import FastAPI, Request, HTTPException, Depends
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 from .store import from_env, digest
 from .finance import chart_pixels
 from .providers import DemoProvider, RobinhoodProvider, ProviderError
+from .oauth import BrowserOAuth, COOKIE, SESSION_TTL, origin
 
 PAGE_SIZE = 6
 TTL = 60
@@ -17,12 +20,29 @@ class Pair(BaseModel):
     code: str = Field(min_length=12, max_length=64)
 
 
-def create_app(vault=None, clock=time.time):
+class BrowserAction(BaseModel):
+    csrf: str = Field(min_length=32, max_length=100)
+
+
+def create_app(
+    vault=None, clock=time.time, backend_url=None, oauth_client_factory=None
+):
     vault = vault or from_env()
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
     providers = {"demo": DemoProvider(), "robinhood": RobinhoodProvider(vault)}
     lock = threading.RLock()
     attempts = []
+    backend_url = (
+        (
+            os.environ.get("HOOD_BACKEND_URL")
+            or os.environ.get("RENDER_EXTERNAL_URL", "")
+        )
+        if backend_url is None
+        else backend_url
+    )
+    if backend_url:
+        backend_url = origin(backend_url)
+    oauth = BrowserOAuth(vault, backend_url, clock, oauth_client_factory)
 
     @app.middleware("http")
     async def secure(request, call_next):
@@ -35,6 +55,8 @@ def create_app(vault=None, clock=time.time):
                 "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
             }
         )
+        if backend_url:
+            response.headers["Strict-Transport-Security"] = "max-age=31536000"
         return response
 
     def auth(request: Request):
@@ -53,9 +75,16 @@ def create_app(vault=None, clock=time.time):
 
     @app.exception_handler(ProviderError)
     async def error(request, exc):
+        status = 503
+        if exc.code == "BROWSER_AUTH_REQUIRED":
+            status = 403
+        elif exc.code == "RATE_LIMITED":
+            status = 429
+        elif exc.code.startswith("AUTH_"):
+            status = 401
         return JSONResponse(
             {"state": exc.code},
-            status_code=401 if exc.code.startswith("AUTH_") else 503,
+            status_code=status,
         )
 
     @app.get("/health")
@@ -90,7 +119,63 @@ def create_app(vault=None, clock=time.time):
             token = vault.exchange(body.code)
         if not token:
             raise HTTPException(401, detail="PAIRING_EXPIRED")
-        return {"token": token}
+        response = JSONResponse({"token": token})
+        response.set_cookie(
+            COOKIE,
+            oauth.authorize_browser("device:" + digest(token)),
+            max_age=SESSION_TTL,
+            secure=True,
+            httponly=True,
+            samesite="lax",
+        )
+        return response
+
+    @app.get("/v1/connection")
+    def connection(request: Request, device=Depends(auth)):
+        with lock:
+            return oauth.status(request.cookies.get(COOKIE), device)
+
+    @app.post("/v1/connection/start")
+    def connect_browser(body: BrowserAction, request: Request, device=Depends(auth)):
+        try:
+            with lock:
+                return {
+                    "url": oauth.start(request.cookies.get(COOKIE), device, body.csrf)
+                }
+        except (httpx.HTTPError, ValueError, KeyError, TypeError):
+            raise ProviderError("OAUTH_PROVIDER_FAILURE") from None
+
+    @app.get("/oauth/robinhood/callback")
+    def callback(request: Request):
+        result = "CONNECTED"
+        q = request.query_params
+        try:
+            if any(len(q.getlist(k)) > 1 for k in ("state", "code", "iss", "error")):
+                raise ProviderError("OAUTH_STATE_INVALID")
+            with lock:
+                oauth.complete(
+                    request.cookies.get(COOKIE),
+                    q.get("state"),
+                    q.get("code"),
+                    q.get("iss"),
+                    q.get("error"),
+                )
+        except ProviderError as exc:
+            result = exc.code
+        except (httpx.HTTPError, ValueError, KeyError, TypeError):
+            result = "OAUTH_PROVIDER_FAILURE"
+        # The callback query may contain credentials. Never echo it or log requests.
+        return RedirectResponse("/configure#robinhood=" + result, status_code=303)
+
+    @app.post("/v1/connection/disconnect")
+    def disconnect_broker(body: BrowserAction, request: Request, device=Depends(auth)):
+        with lock:
+            oauth.require_operator(request.cookies.get(COOKIE), device, body.csrf)
+            oauth.clear_broker_data()
+            vault.delete_prefixes(("device:", "browser:", "pair:"))
+        response = JSONResponse({"disconnected": True, "remote_revocation": False})
+        response.delete_cookie(COOKIE, secure=True, httponly=True, samesite="lax")
+        return response
 
     @app.get("/v1/accounts")
     def accounts(source: str = "demo", device=Depends(auth)):

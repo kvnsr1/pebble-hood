@@ -1,0 +1,12 @@
+{
+  "registration_status": 200,
+  "callback": "https://hood.example.com/oauth/robinhood/callback",
+  "registered_redirect_uris": [
+    "https://hood.example.com/oauth/robinhood/callback"
+  ],
+  "public_client": true,
+  "error": null,
+  "error_description": null,
+  "account_authenticated": false,
+  "callback_received": false
+}

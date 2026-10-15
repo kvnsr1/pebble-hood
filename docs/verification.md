@@ -21,7 +21,7 @@ The SDK's linker emits its existing RWX-segment warning. Source compilation pass
 
 ## Automated checks
 
-`./scripts/test.sh`: **21 Python tests and 12 Node tests pass**. Coverage includes:
+`./scripts/test.sh`: **38 Python tests and 18 Node tests pass**. Coverage includes:
 
 - Exact decimal fractional arithmetic, negative/zero bases, missing values, upper-range precision and signed zero.
 - Stable demo fixtures, supported-holdings sorting and full account total independent of the equities subtotal.
@@ -31,10 +31,19 @@ The SDK's linker emits its existing RWX-segment warning. Source compilation pass
 - Explicit mapping against synthetic schemas, schema fingerprints, pointers and timestamp zones. These synthetic keys are not Robinhood field assertions.
 - Bounded messages, missing/long fields, hidden balances and rejection of unapproved chart history kinds.
 - Phone setup state, stale age retention, expired-auth clear, late responses after disconnect and serialized refresh requests.
+- Browser-only connection privileges separate from the phone's view bearer; Secure/HttpOnly/SameSite cookies, device binding, CSRF, PKCE, issuer/state validation, replay prevention, cancellation, expiry and redacted token failures.
+- Reconnect clears prior backend financial data; failed sign-in preserves it. Broker disconnect revokes all paired phones. Deployment-generated encryption secrets survive vault reopen.
+- Settings preserves the Pebble nonce across OAuth and clears temporary browser storage, keeps canceled-login feedback visible, and ignores late account-list responses after a source change.
 
 `ruff check backend scripts test` and JS syntax checks pass. FastAPI's installed test client emits a dependency deprecation warning; tests still pass.
 
 `.tools/venv/bin/python scripts/smoke-backend.py` starts a real Uvicorn process with an ephemeral encrypted vault. Loopback HTTP checks passed for health, static settings, pairing, authenticated demo retrieval and revocation. This does not establish public TLS or iPhone-webview compatibility.
+
+## Settings browser checks
+
+`scripts/check-settings.py` passed in actual system Chromium with Playwright 1.58.0, at a 390×844 mobile viewport. It starts a temporary local HTTPS backend and uses synthetic registration/token responses plus an intercepted authorization page. The browser completed an actual cross-origin redirect and return, retained the Secure browser cookie and Pebble return context, removed temporary session storage, showed the live-mapping gate, and handled cancellation without JavaScript errors. Horizontal overflow was checked and full-page images inspected for readability. This does not establish real Robinhood authorization or iPhone webview support.
+
+Screenshots: [setup](screenshots/settings-setup.png), [connect](screenshots/settings-connect.png), [verification needed](screenshots/settings-verification.png), [canceled](screenshots/settings-canceled.png). Reproduction and deployment steps are in [phone-connect.md](phone-connect.md).
 
 ## Emulator checks
 
@@ -80,4 +89,4 @@ Navigation regression fixes were verified: ActionMenu opens the native result wi
 
 ## Robinhood connection evidence
 
-The unauthenticated official MCP POST returns a real 401 challenge. Protected-resource and authorization metadata were fetched; public-client registration returned 200. No user authenticated, no brokerage response was obtained, and refresh success was tested only with mocked protocol responses. See [Robinhood access](robinhood-access.md) for precisely what remains unknown and the supported browser-login steps.
+The unauthenticated official MCP POST returns a real 401 challenge. Protected-resource and authorization metadata were fetched; public-client registration returned 200 for both loopback and HTTPS callbacks. The HTTPS test used the reserved example URL `https://hood.example.com/oauth/robinhood/callback` and the response echoed it. No user authenticated, no real callback or brokerage response was obtained, and refresh success was tested only with mocked protocol responses. See [Robinhood access](robinhood-access.md) for precisely what remains unknown and the supported browser-login steps.

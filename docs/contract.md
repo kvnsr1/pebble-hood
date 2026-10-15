@@ -12,6 +12,8 @@ No ordinary retrieval/calculation requires an LLM. OAuth tokens never enter phon
 
 `GET /v1/accounts?source=demo|robinhood` returns `{provider, accounts:[{id,name}]}`. `GET /v1/portfolio?source=...&account=...&page=0` returns the normalized page described below. All `/v1` reads require an Authorization bearer token. `POST /v1/pair` exchanges a ten-minute one-use code; `POST /v1/disconnect` revokes that phone. There is no arbitrary MCP proxy or trading endpoint.
 
+Pairing also grants the requesting browser a separate 30-minute `__Host-hood_operator` Secure/HttpOnly/SameSite=Lax cookie. `GET /v1/connection` requires the phone view bearer; only the matching authorized browser receives a CSRF value. `POST /v1/connection/start` and `/v1/connection/disconnect` require that bearer, browser cookie and CSRF together. A view bearer by itself cannot initiate OAuth or remove the broker connection. Start is limited to once per minute per browser. The public callback accepts only a live, single-use, five-minute state bound to the original browser/device; it requires the issuer when discovery advertises it. It redirects to settings without echoing codes or tokens. Replacing authorization clears old financial caches/history; disconnect removes brokerage tokens/caches and revokes all phones/browser sessions, while retaining the reviewed mapping. Remote Robinhood revocation remains a user action.
+
 | Field | Meaning |
 | --- | --- |
 | `version` | Integer 1; unsupported versions rejected. |

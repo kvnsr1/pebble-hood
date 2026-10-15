@@ -2,6 +2,8 @@
 """Unauthenticated protocol probe. Never prints response headers or credentials."""
 
 import json
+import argparse
+from urllib.parse import urlsplit
 import urllib.request
 import urllib.error
 
@@ -62,5 +64,50 @@ def probe():
     }
 
 
+def probe_https_callback(callback):
+    p = urlsplit(callback)
+    if (
+        p.scheme != "https"
+        or not p.hostname
+        or p.username
+        or p.password
+        or p.query
+        or p.fragment
+    ):
+        raise ValueError(
+            "Provide an HTTPS callback URL without credentials, query or fragment"
+        )
+    status, _, data = request(
+        "https://agent.robinhood.com/oauth/trading/register",
+        {
+            "client_name": "Pebble Hood HTTPS callback compatibility check",
+            "redirect_uris": [callback],
+            "grant_types": ["authorization_code", "refresh_token"],
+            "response_types": ["code"],
+            "token_endpoint_auth_method": "none",
+        },
+    )
+    data = data or {}
+    return {
+        "registration_status": status,
+        "callback": callback,
+        "registered_redirect_uris": data.get("redirect_uris"),
+        "public_client": data.get("token_endpoint_auth_method") == "none",
+        "account_authenticated": False,
+        "callback_received": False,
+    }
+
+
 if __name__ == "__main__":
-    print(json.dumps(probe(), indent=2))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--https-callback",
+        help="Also test registration with this HTTPS redirect (no login)",
+    )
+    args = parser.parse_args()
+    result = probe()
+    if args.https_callback:
+        result["https_callback_registration"] = probe_https_callback(
+            args.https_callback
+        )
+    print(json.dumps(result, indent=2))

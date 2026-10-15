@@ -1,6 +1,6 @@
 # Pebble Hood
 
-A personal, viewing-only portfolio app for Pebble Time 2 and Pebble 2 Duo. Native C screens, PebbleKit JS phone bridge, private Python backend, browser-based Robinhood OAuth utility, encrypted storage, account selection, and a deterministic demo.
+A personal, viewing-only portfolio app for Pebble Time 2 and Pebble 2 Duo. Native C screens, PebbleKit JS phone bridge, private Python backend, browser-based Robinhood connection from phone settings, encrypted storage, account selection, and a deterministic demo.
 
 **The demo is working and compiled. Live Robinhood display is not yet verified.** Official OAuth discovery and public-client registration were tested successfully. Login, actual account coverage, token refresh, tool schemas and field mapping still need your account-assisted verification. No passwords, unofficial APIs, scraping or trading operations are used.
 
@@ -23,12 +23,13 @@ For browser-only demo installation, [import directly into CloudPebble](https://c
 ./scripts/pebble.sh install --emulator emery --vnc dist/pebble-hood-demo.pbw
 ```
 
-For a configured build, run the backend behind your HTTPS origin, set `HOOD_BACKEND_URL`, build with `./scripts/build.sh --live`, and pair from the phone settings using `python -m backend.manage pair`. Demo data also works through the authenticated backend. Robinhood connection starts with `python -m backend.manage connect`; live display stays gated until its actual schemas and response mapping are reviewed.
+For a configured build, run the backend behind your HTTPS origin, set `HOOD_BACKEND_URL`, build with `./scripts/build.sh --live`, and pair from the phone settings using `python -m backend.manage pair`. Tap **Connect Robinhood** in settings to start official browser authorization. Demo data also works through the authenticated backend. Live display stays gated until actual schemas and response mapping are reviewed. A [Render Blueprint and phone setup guide](docs/phone-connect.md) are included; no hosted service has been deployed.
 
 - [Exact iPhone, backend, HTTPS, SDK and CloudPebble instructions](docs/setup.md)
+- [Phone-based Robinhood connection and hosted deployment](docs/phone-connect.md)
 - [Verified Robinhood findings and login/mapping steps](docs/robinhood-access.md)
 - [Architecture, financial semantics and message contract](docs/contract.md)
 - [Reviewed Pebble resources, design decisions and licenses](docs/design-references.md)
 - [Build/test results and emulator screenshots](docs/verification.md)
 
-Only `flint` (144×168 monochrome) and `emery` (200×228 color) are declared. No physical-watch/iPhone verification or production deployment is claimed. The current CloudPebble workflow was researched; the local SDK build is the verified path.
+Only `flint` (144×168 monochrome) and `emery` (200×228 color) are declared. Direct cloud installation of the demo to the user's physical watch succeeded. Screens were verified in emulators; settings OAuth was tested in Chromium with synthetic provider responses. No real Robinhood login, iPhone settings flow or production deployment is claimed.

@@ -1,61 +1,51 @@
 <!doctype html>
 <html lang="en">
-  <meta charset="utf-8" /><meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  /><title>Pebble Hood settings</title
-  ><link rel="stylesheet" href="/config.css" />
-  <main>
-    <h1>Pebble Hood</h1>
-    <p>Portfolio at a glance. Viewing only.</p>
-    <section id="pairing">
-      <label
-        >One-use pairing code<input
-          id="code"
-          type="password"
-          autocomplete="off"
-          maxlength="64" /></label
-      ><button id="pair">Pair phone</button>
-      <p>
-        Run <code>python -m backend.manage pair</code> on your server. Enter
-        that code here. Never enter your Robinhood password or token.
-      </p>
-    </section>
-    <section id="settings" hidden>
-      <label
-        >Data source<select id="source">
-          <option value="demo">Demo — synthetic portfolio</option>
-          <option value="robinhood">
-            Robinhood — requires verified connection
-          </option>
-        </select></label
-      ><label>Account<select id="account"></select></label
-      ><label
-        ><input id="hide" type="checkbox" /> Hide balances on the watch</label
-      ><button id="save">Save to watch</button
-      ><button id="disconnect">Disconnect this phone</button>
-    </section>
-    <p id="status" role="status"></p>
-    <details>
-      <summary>Connect or reconnect Robinhood</summary>
-      <p>
-        On the backend machine, run
-        <code>python -m backend.manage connect</code>. Sign in only in the
-        Robinhood browser window. It may require an MCP account and grant
-        broader privileges than this viewer uses. Run
-        <code>python -m backend.manage inspect</code> afterward.
-      </p>
-      <p>
-        This release gates live display until response-field mapping is
-        verified. Demo data is explicitly labeled. See docs/robinhood-access.md.
-      </p>
-      <p>
-        Disconnect this phone revokes its backend access. To remove Robinhood
-        authorization too, run
-        <code>python -m backend.manage disconnect</code> and revoke the
-        connected agent in Robinhood.
-      </p>
-    </details>
-  </main>
-  <script src="/config.js"></script>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pebble Hood settings</title>
+    <link rel="stylesheet" href="/config.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Pebble Hood</h1>
+      <p>Portfolio at a glance. Viewing only.</p>
+      <p id="login-result" role="status" hidden></p>
+      <section id="pairing">
+        <label>One-use setup code
+          <input id="code" type="password" autocomplete="off" maxlength="64" />
+        </label>
+        <button id="pair">Authorize this phone</button>
+        <p>Use the setup code from your private backend. Never enter a Robinhood password or token here.</p>
+      </section>
+      <section id="settings" hidden>
+        <h2>Robinhood connection</h2>
+        <p id="connection-status" role="status">Checking connection…</p>
+        <p>Sign in only on Robinhood’s website. Robinhood grants broader access than this portfolio viewer uses.</p>
+        <details>
+          <summary>About Robinhood access</summary>
+          <p>This app only reads portfolio data. Robinhood may ask you to open an MCP account during onboarding. Review that choice yourself.</p>
+        </details>
+        <button id="authorize" hidden>Enter setup code for connection controls</button>
+        <button id="connect" disabled>Connect Robinhood</button>
+        <label>Data source
+          <select id="source">
+            <option value="demo">Demo — synthetic portfolio</option>
+            <option value="robinhood">Robinhood</option>
+          </select>
+        </label>
+        <label>Account<select id="account"></select></label>
+        <label><input id="hide" type="checkbox" /> Hide balances on the watch</label>
+        <button id="save" disabled>Save to watch</button>
+        <details>
+          <summary>Disconnect</summary>
+          <button id="disconnect">Disconnect this phone only</button>
+          <button id="disconnect-broker" disabled>Disconnect Robinhood and paired phones</button>
+          <p>Disconnect removes locally stored authorization. Also revoke the connected agent in Robinhood to remove its access there.</p>
+        </details>
+      </section>
+      <p id="status" role="status"></p>
+    </main>
+    <script src="/config.js"></script>
+  </body>
 </html>

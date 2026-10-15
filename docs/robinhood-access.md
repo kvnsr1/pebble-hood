@@ -1,6 +1,6 @@
 # Official Robinhood access and remaining verification
 
-**Live portfolio access has not been verified.** The working demo, OAuth utility, MCP transport and explicit mapping engine are implemented. A browser login and verification of actual response fields are still required before live display. There is no unofficial API, scraping, password collection or LLM in the data path.
+**Live portfolio access has not been verified.** The working demo, settings-based browser OAuth, computer OAuth utility, MCP transport and explicit mapping engine are implemented. A browser login and verification of actual response fields are still required before live display. There is no unofficial API, scraping, password collection or LLM in the data path.
 
 ## Evidence from 2026-10-15
 
@@ -15,6 +15,7 @@ Actual unauthenticated HTTP findings, reproducible with `python scripts/probe_ro
 | MCP initialize | HTTP 401 with protected-resource metadata challenge. GET endpoint returns 405; POST is required. |
 | Personal custom client | Discovery works; public-client dynamic registration using loopback callback returned HTTP 200 with client ID/name/redirect URIs/auth method. This proves registration, not account authorization. |
 | Browser authorization | Metadata advertises `https://robinhood.com/oauth`, authorization code, PKCE S256, public client (`none`). |
+| Hosted callback | Public-client registration with `https://hood.example.com/oauth/robinhood/callback` returned HTTP 200 and echoed the exact HTTPS URI. This is a reserved example hostname, not a deployed backend. Login and delivery of an actual callback remain unverified. |
 | Refresh | `refresh_token` grant advertised. Issuance, token lifetime, rotation and successful refresh have not been tested with an account. Code retains rotated tokens encrypted. |
 | Scopes | Only `internal` advertised by resource and authorization metadata. No read-only OAuth scope found. Local read allowlisting does **not** reduce the token's server-side privileges. |
 | Account coverage | Documentation says all accounts are readable; not verified against your accounts. Agent trading is limited to its special account. |
@@ -24,6 +25,12 @@ Actual unauthenticated HTTP findings, reproducible with `python scripts/probe_ro
 | Revocation | No revocation endpoint advertised in observed metadata. Disconnect deletes local tokens; revoke the connected agent in Robinhood too. |
 
 The non-secret protocol response is in [robinhood-probe.json](robinhood-probe.json). The one-off registration probe did not authenticate an account or retain a token. It did not open an MCP account.
+
+The separate [HTTPS callback probe result](robinhood-https-callback-probe.json) can be reproduced with `python scripts/probe_robinhood.py --https-callback https://hood.example.com/oauth/robinhood/callback`. Registration acceptance is the only live HTTPS callback evidence. See [phone connection and deployment](phone-connect.md) for the implemented mobile settings flow, its local browser tests and remaining real-login checks.
+
+## Connect from Pebble iPhone settings
+
+After deploying an HTTPS backend and installing a configured PBW, the settings page supports **Authorize this phone → Connect Robinhood → account selection → Save to watch**. A single-use setup code gives the browser a 30-minute connection-control session. Browser OAuth uses PKCE, a five-minute single-use state, cookie/device binding, and the issuer parameter advertised by Robinhood. Brokerage tokens stay encrypted on the backend. See [the complete setup instructions](phone-connect.md). The loopback utility below is a fallback if Robinhood refuses the embedded browser or does not complete the hosted flow.
 
 ## Connect on your computer
 

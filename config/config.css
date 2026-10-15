@@ -38,8 +38,17 @@ button {
   border: 0;
   border-radius: 4px;
 }
-#disconnect {
+#disconnect,
+#disconnect-broker,
+#authorize {
   background: #444;
+}
+button:disabled {
+  opacity: 0.55;
+}
+#status,
+#connection-status {
+  overflow-wrap: anywhere;
 }
 p {
   line-height: 1.5;

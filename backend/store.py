@@ -7,6 +7,7 @@ import threading
 import hashlib
 import secrets
 import time
+import base64
 from pathlib import Path
 from cryptography.fernet import Fernet
 
@@ -46,6 +47,14 @@ class Vault:
         with self.lock, self.db:
             self.db.execute("DELETE FROM records")
 
+    def delete_prefixes(self, prefixes):
+        with self.lock, self.db:
+            for prefix in prefixes:
+                self.db.execute(
+                    "DELETE FROM records WHERE substr(id,1,?)=?",
+                    (len(prefix), prefix),
+                )
+
     def consume(self, key):
         with self.lock:
             self.db.execute("BEGIN IMMEDIATE")
@@ -81,5 +90,12 @@ def digest(value):
 def from_env():
     key = os.environ.get("HOOD_VAULT_KEY")
     if not key:
-        raise RuntimeError("Set HOOD_VAULT_KEY; see .env.example")
+        secret = os.environ.get("HOOD_VAULT_SECRET", "")
+        if len(secret) >= 32:
+            # A deployment-generated random secret, not a user password.
+            key = base64.urlsafe_b64encode(hashlib.sha256(secret.encode()).digest())
+    if not key:
+        raise RuntimeError(
+            "Set HOOD_VAULT_KEY or a generated HOOD_VAULT_SECRET; see .env.example"
+        )
     return Vault(os.environ.get("HOOD_DATA_DIR", ".private"), key)

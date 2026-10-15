@@ -31,6 +31,8 @@ The final packaging step adds Core manifest-version 2 and narrowly scoped Intern
 
 ## Backend and HTTPS
 
+For the prepared hosted option and **Connect Robinhood** inside the Pebble iPhone settings page, follow [phone connection and Render deployment](phone-connect.md). A real Robinhood login remains required to verify that flow; the current browser test uses synthetic provider responses.
+
 This is a single-user server. Use **one** Uvicorn worker; SQLite and refresh serialization are intentionally simple. No database service, LLM or task queue is needed.
 
 ```sh
@@ -68,9 +70,9 @@ This writes `dist/pebble-hood.pbw`. It contains your backend hostname, **no toke
 2. On the server: `python -m backend.manage pair` (same environment/key as the server).
 3. In the Pebble phone app, open Pebble Hood's settings. Enter the generated ten-minute one-use **backend pairing code**. This is not a Robinhood credential.
 4. Choose **Demo**, choose an account, optionally hide balances, then Save to watch. This configured mode exercises authenticated HTTPS to the backend using synthetic data.
-5. For your actual brokerage data, complete [the supported Robinhood login and schema verification](robinhood-access.md), then choose **Robinhood** and your account in those settings. Until verified, the page reports the setup gate explicitly.
+5. Tap **Connect Robinhood** in settings to start the official browser authorization. Initial login and the [actual schema/response review](robinhood-access.md) must succeed before live data can be shown. Then choose **Robinhood** and your account. Until verified, the page reports the setup gate explicitly. The computer OAuth utility remains available as a fallback.
 
-Configuration passes the device token through URL fragments (not query strings), removes it from the webview URL immediately, and returns it only to PebbleKit JS. The watch receives no token. The phone token can only use the view endpoints and revoke itself; it cannot initiate broker OAuth or MCP calls directly. The phone stores this token and one cached page in the Pebble app's storage. iOS/Pebble permissions may require approving the declared backend domain; physical Core behavior remains untested here.
+Configuration passes the device token through URL fragments (not query strings), removes it from the webview URL immediately, and returns it only to PebbleKit JS. The watch receives no token. The phone token alone can only use the view/status endpoints and revoke itself; broker connection controls additionally need the separate browser session and CSRF. It cannot make arbitrary MCP calls. The phone stores this token and one cached page in the Pebble app's storage. During OAuth, the settings page temporarily preserves its return context in sessionStorage and clears it on return. iOS/Pebble permissions may require approving the declared backend domain; physical configuration-webview behavior remains untested here.
 
 ## Developer Connection installation
 

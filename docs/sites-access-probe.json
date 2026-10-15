@@ -25,16 +25,16 @@
   "phone_probe_install": true,
   "phone_result": {
     "without_extra_header": {
-      "state": "NETWORK_OR_PERMISSION",
-      "http": 0,
+      "state": "SIGN_IN_REQUIRED",
+      "http": 401,
       "marker": false
     },
     "view_token": {
-      "state": "NETWORK_OR_PERMISSION",
-      "http": 0,
+      "state": "SIGN_IN_REQUIRED",
+      "http": 401,
       "marker": false
     },
-    "phase": "baseline"
+    "phase": "after_chatgpt_signin"
   },
   "site_deployment": {
     "project_id": "appgprj_6ad1413cd354819193428e4f86bde260",
@@ -44,7 +44,7 @@
     "url": "https://pebble-hood-connection-test.kvnsr1.chatgpt.site",
     "source_commit": "0d48ce6e5fcbe1f4391d93e240eb8773a21ec58e"
   },
-  "browser_cookie_sharing_tested": false,
+  "browser_cookie_sharing_tested": true,
   "phone_results": [
     {
       "without_extra_header": {
@@ -58,6 +58,19 @@
         "marker": false
       },
       "phase": "baseline"
+    },
+    {
+      "without_extra_header": {
+        "state": "SIGN_IN_REQUIRED",
+        "http": 401,
+        "marker": false
+      },
+      "view_token": {
+        "state": "SIGN_IN_REQUIRED",
+        "http": 401,
+        "marker": false
+      },
+      "phase": "after_chatgpt_signin"
     }
   ]
 }

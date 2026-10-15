@@ -18,7 +18,20 @@ Actual HTTPS requests from the project workspace, with no browser cookies and re
 
 The service credential was obtained through native Sites metadata and kept only in session memory. It was sent only to this exact Site origin. No credential was created or rotated just to perform the test. It was not embedded in the phone/watch code, written to a file, printed, or committed. The safe results are in [sites-access-probe.json](sites-access-probe.json).
 
-These results establish that the private Site supports authenticated requests without browser identity when using its service credential. The current Pebble Hood phone adapter sends its own backend view token, which does not satisfy the additional Sites sign-in boundary. A secure, supported phone authentication path still needs verification before adopting Sites for live portfolio data. Signing into a Site in Safari does not by itself establish PebbleKit JS background access.
+These results establish that the private Site supports authenticated requests without browser identity when using its service credential. The current Pebble Hood phone adapter sends its own backend view token, which does not satisfy the additional Sites sign-in boundary.
+
+## Completed iPhone sign-in test
+
+The user successfully signed into ChatGPT from **Sites Test → Settings**, clicked **Return to Pebble and test access**, and returned to the expected watch-app details screen. Their screenshot shows the test hostname's Internet permission enabled and used just now. The cloud log listener captured the following actual phone results tagged `after_chatgpt_signin`:
+
+| Background request after sign-in | Status | JSON marker |
+| --- | --- | --- |
+| Without an extra authorization header, with normal cookie handling enabled | 401, `SIGN_IN_REQUIRED` | Not received |
+| With a synthetic backend view token, with normal cookie handling enabled | 401, `SIGN_IN_REQUIRED` | Not received |
+
+This establishes that the phone reached the Site after the browser returned, but its background requests remained unauthenticated. The browser sign-in flow did not grant the needed PebbleKit JS access on this iPhone. The screenshot's return page is expected; it is not an error page. No inference about all iOS cookie implementations or future Sites capabilities is needed for this result.
+
+The current private-Sites flow cannot serve as a drop-in backend for this app. The existing Sites service credential still works from the workspace, but a supported, secure phone provisioning path for that separate credential has not been implemented or verified. No platform credential was added to client code, and the Site remains private. A standalone backend with its own narrowly scoped device token avoids this additional Sites sign-in boundary. Cloudflare Workers plus D1 free tiers remain a possible hosted alternative, requiring a backend adaptation and free-limit verification; the existing Python backend can also run on an always-on computer. Neither alternative was deployed by this test.
 
 ## Physical-phone diagnostic
 
@@ -42,7 +55,7 @@ To test whether Pebble can reuse normal ChatGPT browser authentication:
 3. Tap **Return to Pebble and test access** on the test page.
 4. The diagnostic retries the requests and labels its safe phone log result `after_chatgpt_signin`. HTTP 200 plus the correct marker would establish cookie-based access for that phone session. HTTP 401 would show that the browser session is not available to the phone's background requests; zero indicates a network/permission failure instead. Ongoing session renewal would still need testing even after an initial success.
 
-The private Site is unchanged in audience. No service credential needs to be copied into chat or the watch. This cookie-sharing check remains unverified until a real phone completes it.
+The private Site is unchanged in audience. No service credential needs to be copied into chat or the watch. This check was completed on the user's iPhone: both background requests returned HTTP 401 after browser sign-in.
 
 ## Repeat the server-side check
 
